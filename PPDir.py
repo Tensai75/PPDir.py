@@ -113,32 +113,37 @@ if os.environ.get('NZBNA_EVENT'):
 
 # if the script was called for post-processing the files have to be moved from the post-processing directory to the final destination directory
 else:
-    destination = ''
-    # first check if a category is set and the user has set a destination directory for this category
-    n = 1
-    while True:
-        if os.environ.get('NZBOP_CATEGORY' + str(n) + '_NAME'):
-            if os.environ.get('NZBOP_CATEGORY' + str(n) + '_NAME') == os.environ.get('NZBPP_CATEGORY'):
-                destination = os.environ.get('NZBOP_CATEGORY' + str(n) + '_DESTDIR')
+    # first check if the source path exists
+    if os.path.exists(os.environ.get('NZBPP_DIRECTORY')):
+        destination = ''
+        # first check if a category is set and the user has set a destination directory for this category
+        n = 1
+        while True:
+            if os.environ.get('NZBOP_CATEGORY' + str(n) + '_NAME'):
+                if os.environ.get('NZBOP_CATEGORY' + str(n) + '_NAME') == os.environ.get('NZBPP_CATEGORY'):
+                    destination = os.environ.get('NZBOP_CATEGORY' + str(n) + '_DESTDIR')
+                    break
+                n = n + 1
+            else:
                 break
-            n = n + 1
+        # if not, set the default destination directory
+        if not destination:
+            destination = os.environ.get('NZBOP_DESTDIR')
+            # if the user has activated the AppendCategoryDir option and a category is set, append the category name as subfolder
+            if os.environ.get('NZBOP_APPENDCATEGORYDIR') and os.environ.get('NZBPP_CATEGORY'):
+                destination = re.sub(r'[\/\\]*$', '', destination)
+                destination = destination + '/' + os.environ.get('NZBPP_CATEGORY')
+        # check if a destination is set and move the files
+        if destination:
+            destination = moverecursively(os.environ.get('NZBPP_DIRECTORY'), destination)
+            print '[INFO] All files successfully moved to: ' + destination
+            # set DIRECTORY and FINALDIR to the new final destination directory
+            print '[NZB] DIRECTORY=' + destination
+            print '[NZB] FINALDIR=' + destination
+            sys.exit(93)
         else:
-            break
-    # if not, set the default destination directory
-    if not destination:
-        destination = os.environ.get('NZBOP_DESTDIR')
-        # if the user has activated the AppendCategoryDir option and a category is set, append the category name as subfolder
-        if os.environ.get('NZBOP_APPENDCATEGORYDIR') and os.environ.get('NZBPP_CATEGORY'):
-            destination = re.sub(r'[\/\\]*$', '', destination)
-            destination = destination + '/' + os.environ.get('NZBPP_CATEGORY')
-    # check if a destination is set and move the files
-    if destination:
-        destination = moverecursively(os.environ.get('NZBPP_DIRECTORY'), destination)
-        print '[INFO] All files successfully moved to: ' + destination
-        # set DIRECTORY and FINALDIR to the new final destination directory
-        print '[NZB] DIRECTORY=' + destination
-        print '[NZB] FINALDIR=' + destination
-        sys.exit(93)
+            print '[ERROR] Unable to set a final destination directory. Please check your settings!'
+            sys.exit(94)
     else:
-        print '[ERROR] Unable to set a final destination directory. Please check your settings!'
-        sys.exit(94)
+        print '[INFO] Nothing to move. The download has probably failed or been deleted.'
+        sys.exit(93)        
