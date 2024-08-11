@@ -18,6 +18,8 @@
 #  
 # This prevents issues with partially unpacked files already beeing processed
 # by subsequent scripts/programs watching the final destination directory.
+# For best performance, the post-processing directory should be on the same
+# share or drive like the final destination directory.
 #  
 # NOTE: If you have other post-processing scripts running, this extension script
 # should be the first post-processing script to run in order to make sure

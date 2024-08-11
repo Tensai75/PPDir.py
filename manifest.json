@@ -1,0 +1,36 @@
+{
+    "main": "PPDir.py",
+    "name": "PPDir",
+    "homepage": "https://github.com/nzbgetcom/Extension-PPDir",
+    "kind": "QUEUE/POST-PROCESSING",
+    "displayName": "Post-Processing Directory",
+    "version": "1.0",
+    "nzbgetMinVersion": "24.0",
+    "author": "ТΞNSΛI",
+    "license": "MIT",
+    "about": "Allows to set a dedicated post-processing directory.",
+    "queueEvents": "NZB_DOWNLOADED",
+    "requirements": [
+        "This script requires Python 3.x to be installed on your system"
+    ],
+    "description": [
+        "Instead of post-processing the files directly into the final destination directory and extracting the files into an \"_unpack\" directory within this final destination directory, the whole NZBGet post-processing step will take place within a (temporary) directory in the defined post-processing directory.",
+        "The files are then moved by this extension script to the final destination directory only after NZBGet has finished the post-processing (e.g. unpack and cleanup).",
+        " ",
+        "This prevents issues with partially unpacked files already beeing processed by subsequent scripts/programs watching the final destination directory.",
+        "For best performance, the post-processing directory should be on the same share or drive like the final destination directory.",
+        " ",
+        "NOTE: If you have other post-processing scripts running, this extension script should be the first post-processing script to run in order to make sure your post-processing scripts will find the files in the final destination directory."
+    ],
+    "options": [
+        {
+            "name": "PPDir",
+            "displayName": "Post-processing directory",
+            "value": "${mainDir}/temp",
+            "description": ["Please use absolute paths. On POSIX you can use \"~\" as alias for the home directory. You can also use ${mainDir} with a relative path (e.g. \"${mainDir}/temp\")"],
+            "select": []
+        }
+    ],
+    "commands": [],
+    "taskTime": ""
+}
