@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 ##############################################################################
 ### NZBGET QUEUE/POST-PROCESSING SCRIPT                                    ###
 ### QUEUE EVENTS: NZB_DOWNLOADED                                           ###
@@ -47,7 +47,7 @@ import unicodedata
 
 # errorHandler function
 def errorHandler(m, e):
-    print '[ERROR] %s. Error: %s'%(m, e)
+    print('[ERROR] %s. Error: %s'%(m, e))
     sys.exit(94)
 
 # moverecursively function
@@ -55,10 +55,10 @@ def moverecursively(source_folder, destination_folder):
     basename = os.path.basename(source_folder)
     dest_dir = os.path.join(destination_folder, basename)
     if not os.path.exists(dest_dir):
-        print '[INFO] Moving directory "%s" to "%s"'%(basename, destination_folder)
+        print('[INFO] Moving directory "%s" to "%s"'%(basename, destination_folder))
         try:
             shutil.move(source_folder, destination_folder)
-        except Exception, e:
+        except Exception as e:
             errorHandler('Cannot move directory', str(e))
     else:
         dst_path = os.path.join(destination_folder, basename)
@@ -66,20 +66,20 @@ def moverecursively(source_folder, destination_folder):
             for item in files:
                 src_file = os.path.join(root, item)
                 dst_file = os.path.join(dst_path, item)
-                print '[INFO] Moving file "%s" to "%s"'%(item, dst_path)
+                print('[INFO] Moving file "%s" to "%s"'%(item, dst_path))
                 if os.path.exists(dst_file):
                     try:
                         os.remove(dst_file)
-                    except Exception, e:
+                    except Exception as e:
                         errorHandler('Cannot move file. Destination file already exists and cannot be overwritten', str(e))
                     try:
                         shutil.move(src_file, dst_file)
-                    except Exception, e:
+                    except Exception as e:
                         errorHandler('Cannot move file', str(e))
                 else:
                     try:
                         shutil.move(src_file, dst_path)
-                    except Exception, e:
+                    except Exception as e:
                         errorHandler('Cannot move file', str(e))
             for item in dirs:
                 src_path = os.path.join(root, item)
@@ -89,12 +89,12 @@ def moverecursively(source_folder, destination_folder):
                 try:
                     os.rmdir(root)
                 except:
-                    print '[WARNING] Cannot delete empty directory "' + root + '"'
+                    print('[WARNING] Cannot delete empty directory "' + root + '"')
     return dest_dir
 
 # first check whether PPDir is set
 if (not 'NZBPO_PPDIR' in os.environ):
-    print '[ERROR] Option "PPDir" is missing in the NZBGet configuration file. Please check the script settings and save them!'
+    print('[ERROR] Option "PPDir" is missing in the NZBGet configuration file. Please check the script settings and save them!')
     sys.exit(94)
 
 # if the script was called by the queue event set the destination directory to the post-processing directory
@@ -103,13 +103,13 @@ if os.environ.get('NZBNA_EVENT'):
     # remove trailing slashes
     ppdir = re.sub(r'[\/\\]*$', '', ppdir)
     # get the destination directory name from the NZB name and do some sanitisation
-    nzbname = os.environ.get('NZBNA_NZBNAME').decode('utf8')
-    subfolder = unicodedata.normalize('NFKD', nzbname).encode('ascii', 'ignore')
+    nzbname = os.environ.get('NZBNA_NZBNAME')
+    subfolder = unicodedata.normalize('NFKD', nzbname)
     subfolder = re.sub(r'(?u)[^\w\.\ \(\)\[\]\{\}\&\+\-]', '', subfolder)
     # add it to the final destination directory
     ppdir = ppdir + '/' + subfolder
-    print '[INFO] Setting post-processing directory to: ' + ppdir
-    print '[NZB] DIRECTORY=' + ppdir
+    print('[INFO] Setting post-processing directory to: ' + ppdir)
+    print('[NZB] DIRECTORY=' + ppdir)   
 
 # if the script was called for post-processing the files have to be moved from the post-processing directory to the final destination directory
 else:
@@ -136,14 +136,14 @@ else:
         # check if a destination is set and move the files
         if destination:
             destination = moverecursively(os.environ.get('NZBPP_DIRECTORY'), destination)
-            print '[INFO] All files successfully moved to: ' + destination
+            print('[INFO] All files successfully moved to: ' + destination)
             # set DIRECTORY and FINALDIR to the new final destination directory
-            print '[NZB] DIRECTORY=' + destination
-            print '[NZB] FINALDIR=' + destination
+            print('[NZB] DIRECTORY=' + destination)
+            print('[NZB] FINALDIR=' + destination)
             sys.exit(93)
         else:
-            print '[ERROR] Unable to set a final destination directory. Please check your settings!'
+            print('[ERROR] Unable to set a final destination directory. Please check your settings!')
             sys.exit(94)
     else:
-        print '[INFO] Nothing to move. The download has probably failed or been deleted.'
+        print('[INFO] Nothing to move. The download has probably failed or been deleted.')
         sys.exit(93)        
