@@ -9,6 +9,8 @@ Instead of post-processing the files directly into the final destination directo
 This prevents issues with partially unpacked files already beeing processed by subsequent scripts/programs watching the final destination directory.
 For best performance, the post-processing directory should be on the same share or drive like the final destination directory.
 
+__NOTE:__ PPDir does not work with option DIRECTUNPACK enabled!
+
 __NOTE:__ If you have other post-processing scripts running, this extension script should be the first post-processing script to run in order to make sure your post-processing scripts will find the files in the final destination directory.
 
 __NOTE:__ This script requires NZBGet v24.0 or higher and Python 3.x to be installed on the system running NZBGet.
