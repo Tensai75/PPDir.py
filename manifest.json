@@ -20,14 +20,16 @@
         "This prevents issues with partially unpacked files already beeing processed by subsequent scripts/programs watching the final destination directory.",
         "For best performance, the post-processing directory should be on the same share or drive like the final destination directory.",
         " ",
+        "NOTE: PPDir does not work with option DIRECTUNPACK enabled!",
+        " ",
         "NOTE: If you have other post-processing scripts running, this extension script should be the first post-processing script to run in order to make sure your post-processing scripts will find the files in the final destination directory."
     ],
     "options": [
         {
             "name": "PPDir",
             "displayName": "Post-processing directory",
-            "value": "${mainDir}/temp",
-            "description": ["Please use absolute paths. On POSIX you can use \"~\" as alias for the home directory. You can also use ${mainDir} with a relative path (e.g. \"${mainDir}/temp\")"],
+            "value": "${MainDir}/temp",
+            "description": ["Please use absolute paths. On POSIX you can use \"~\" as alias for the home directory. You can also use ${MainDir} with a relative path (e.g. \"${MainDir}/temp\")"],
             "select": []
         }
     ],
