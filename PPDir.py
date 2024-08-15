@@ -15,17 +15,19 @@
 # directory. The files are then moved by this extension script to the final
 # destination directory only after NZBGet has finished the post-processing
 # (e.g. unpack and cleanup).
-#  
+#
 # This prevents issues with partially unpacked files already beeing processed
 # by subsequent scripts/programs watching the final destination directory.
 # For best performance, the post-processing directory should be on the same
 # share or drive like the final destination directory.
-#  
+#
+# NOTE: PPDir does not work with option DIRECTUNPACK enabled!
+#
 # NOTE: If you have other post-processing scripts running, this extension script
 # should be the first post-processing script to run in order to make sure
 # your post-processing scripts will find the files in the final destination
 # directory.
-#  
+#
 # NOTE: This script requires Python to be installed on your system.
 
 ##############################################################################
@@ -35,8 +37,8 @@
 #
 #
 # Please use absolute paths. On POSIX you can use "~" as alias for the home directory.
-# You can also use ${mainDir} with a relative path (e.g. "${mainDir}/temp")
-#PPDir=${mainDir}/temp
+# You can also use ${MainDir} with a relative path (e.g. "${MainDir}/temp")
+#PPDir=${MainDir}/temp
 
 ### NZBGET QUEUE/POST-PROCESSING SCRIPT                                    ###
 ##############################################################################
@@ -97,6 +99,11 @@ def moverecursively(source_folder, destination_folder):
 # first check whether PPDir is set
 if (not 'NZBPO_PPDIR' in os.environ):
     print('[ERROR] Option "PPDir" is missing in the NZBGet configuration file. Please check the script settings and save them!')
+    sys.exit(94)
+
+# check if DIRECTUNPACK is enabled
+if os.environ.get('NZBOP_DIRECTUNPACK') == 'yes':
+    print('[ERROR] Option DIRECTUNPACK is enabled! PPDir does not work with this option enabled.')
     sys.exit(94)
 
 # if the script was called by the queue event set the destination directory to the post-processing directory
